@@ -1,20 +1,19 @@
-namespace Customer.Domain.Entities
+namespace Customer.Domain.Entities;
+
+public class Salesman
 {
-    public class Salesman
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
+    public string Phone { get; set; } = null!;
+
+
+    public Salesman(int id, string name, string email, string phone)
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public string Email { get; set; }
-        public string Phone { get; set; }
-
-
-        public Salesman(int id, string name, string email, string phone)
-        {
-            Id = id;
-            Name = name;
-            Email = email;
-            Phone = phone;
-        }
+        Id = id;
+        Name = name;
+        Email = email;
+        Phone = phone;
     }
 }

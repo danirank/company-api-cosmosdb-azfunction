@@ -3,12 +3,30 @@ using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = FunctionsApplication.CreateBuilder(args);
+using Microsoft.Extensions.Configuration;
+using Azure.Identity;
 
-builder.ConfigureFunctionsWebApplication();
 
-builder.Services
-    .AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights();
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        var builder = FunctionsApplication.CreateBuilder(args);
 
-builder.Build().Run();
+        builder.ConfigureFunctionsWebApplication();
+
+       var keyVaultUrl = builder.Configuration["KeyVault:Url"];
+       if (!string.IsNullOrEmpty(keyVaultUrl))
+        {
+                builder.Configuration.AddAzureKeyVault(
+                new Uri(keyVaultUrl),
+                new DefaultAzureCredential());
+        }
+
+        builder.Services
+            .AddApplicationInsightsTelemetryWorkerService()
+            .ConfigureFunctionsApplicationInsights();
+
+        builder.Build().Run();
+    }
+}

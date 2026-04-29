@@ -1,7 +1,9 @@
+using Customer.Domain.Dto;
+
 namespace Customer.Core.Interfaces; 
 
 public interface ICustomerService
 {
-    Task AddCustomerAsync();
-
+    Task<bool> AddCustomerAsync(AddCustomerDto customer);
+    Task GetCustomersAsync();
 }
