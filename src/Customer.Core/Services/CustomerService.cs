@@ -18,7 +18,7 @@ public class CustomerService : ICustomerService
         throw new NotImplementedException();
     }
 
-    public Task GetCustomersAsync()
+    public Task<List<GetCustomersDto>> GetCustomersAsync()
     {
         throw new NotImplementedException();
     }

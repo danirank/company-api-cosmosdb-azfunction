@@ -15,13 +15,6 @@ internal class Program
 
         builder.ConfigureFunctionsWebApplication();
 
-       var keyVaultUrl = builder.Configuration["KeyVault:Url"];
-       if (!string.IsNullOrEmpty(keyVaultUrl))
-        {
-                builder.Configuration.AddAzureKeyVault(
-                new Uri(keyVaultUrl),
-                new DefaultAzureCredential());
-        }
 
         builder.Services
             .AddApplicationInsightsTelemetryWorkerService()
