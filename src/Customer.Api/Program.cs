@@ -1,31 +1,37 @@
 using Azure.Identity;
+using Customer.Api.Endpoints;
+using Customer.Api.Extensions.DependencyInjection;
 using Customer.Core.Interfaces;
 using Customer.Core.Services;
-
+using Customer.Domain.Interfaces;
+using Customer.Domain.Repositories;
+using Microsoft.Azure.Cosmos;
 namespace Customer.Api;
+
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var keyVaultUrl = builder.Configuration["KeyVault:Url"];
-        if (!string.IsNullOrEmpty(keyVaultUrl))
-        {
-            builder.Configuration.AddAzureKeyVault(
-            new Uri(keyVaultUrl),
-            new DefaultAzureCredential());
-        }
+        // var keyVaultUrl = builder.Configuration["KeyVault:Url"];
+        // if (!string.IsNullOrEmpty(keyVaultUrl))
+        // {
+        //     builder.Configuration.AddAzureKeyVault(
+        //     new Uri(keyVaultUrl),
+        //     new DefaultAzureCredential());
+        // }
 
+
+        builder.Services.AddCosmosClient(builder.Configuration);
+        builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
-        // Add services to the container.
-        builder.Services.AddAuthorization();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -33,9 +39,9 @@ public class Program
             app.MapOpenApi();
         }
 
-        app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        app.MapCustomerEndpoints();
+
 
 
         app.Run();

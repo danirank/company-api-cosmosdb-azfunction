@@ -10,6 +10,7 @@ public static class CustomerEndpoints
 
         var customerGroup = app.MapGroup("/api/customers");
         customerGroup.MapPost("/", CreateCustomer);
+        customerGroup.MapGet("/", GetCustomers);
 
         return app;
     }

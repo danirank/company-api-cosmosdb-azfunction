@@ -4,6 +4,6 @@ namespace Customer.Core.Interfaces;
 
 public interface ICustomerService
 {
-    Task<bool> AddCustomerAsync(AddCustomerDto customer);
+    Task<GetCustomerDto> AddCustomerAsync(AddCustomerDto customer);
     Task<List<GetCustomersDto>> GetCustomersAsync();
 }

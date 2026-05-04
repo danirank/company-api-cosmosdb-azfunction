@@ -1,10 +1,7 @@
-using Newtonsoft.Json;
+namespace Customer.Domain.Dto;
 
-namespace Customer.Domain.Entities;
-
-public class CustomerEntity
+public class GetCustomerDto
 {
-    [JsonProperty("id")]
     public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;
 
@@ -17,7 +14,5 @@ public class CustomerEntity
     public string Email { get; set; } = null!;
 
     public string? SalesmanId { get; set; } = string.Empty;
-    public Salesman? Salesman { get; set; }
-
-
+    public string? ErrorMessage { get; set; }  = string.Empty; 
 }

@@ -3,5 +3,6 @@ namespace Customer.Domain.Interfaces;
 
 public interface ICustomerRepo
 {
-    Task<bool> AddCustomerAsync(CustomerEntity customer);
+    Task<CustomerEntity> AddCustomerAsync(CustomerEntity customer);
+    Task<List<CustomerEntity>> GetCustomersAsync();
 }
