@@ -3,6 +3,5 @@
     <Project Path="src/Customer.Api/Customer.Api.csproj" />
     <Project Path="src/Customer.Core/Customer.Core.csproj" />
     <Project Path="src/Customer.Domain/Customer.Domain.csproj" />
-    <Project Path="src/Customer.Function/Customer.Function.csproj" />
   </Folder>
 </Solution>
