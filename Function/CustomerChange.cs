@@ -34,7 +34,7 @@ public class CustomerChange
             {
                 if (customer.EmailSetToSalesman || string.IsNullOrEmpty(customer.SalesmanEmail))
                     continue;
-                
+
                 _logger.LogInformation($"Customer ID: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}");
                 var emailBuilder = new EmailBuilderDto
                 {
@@ -50,7 +50,7 @@ public class CustomerChange
 
                 _logger.LogInformation($"Customer ID: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}");
 
-                await container
+                
             }
 
 
