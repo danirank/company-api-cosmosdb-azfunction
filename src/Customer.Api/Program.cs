@@ -27,12 +27,17 @@ public class Program
         builder.Services.AddCosmosClient(builder.Configuration);
         builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddSingleton<CosmosDbInitializer>();
 
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
 
-
+        using (var scope = app.Services.CreateScope())
+        {
+            var initializer = scope.ServiceProvider.GetRequiredService<CosmosDbInitializer>();
+            await initializer.InitializeAsync();
+        }
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

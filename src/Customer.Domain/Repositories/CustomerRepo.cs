@@ -13,7 +13,7 @@ public class CustomerRepo : ICustomerRepo
     public CustomerRepo(CosmosClient cosmosClient)
     {
         _container = cosmosClient
-                .GetDatabase("CustomerDb")
+                .GetDatabase("CompanyDb")
                 .GetContainer("Customers");
     }
     public async Task<CustomerEntity> AddCustomerAsync(CustomerEntity customer)
