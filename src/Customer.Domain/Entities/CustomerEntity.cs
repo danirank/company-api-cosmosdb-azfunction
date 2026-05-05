@@ -16,7 +16,8 @@ public class CustomerEntity
 
     public string Email { get; set; } = null!;
 
-    public string? SalesmanId { get; set; } = string.Empty;
+    public string? SalesmanEmail { get; set; } = string.Empty;
+
     public Salesman? Salesman { get; set; }
 
 
