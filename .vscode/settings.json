@@ -1,9 +1,7 @@
 {
-  "dotnet.defaultSolution": "Customer.slnx",
-  "azureFunctions.deploySubpath": "Customer.Function/bin/Release/net8.0/publish",
+  "azureFunctions.deploySubpath": "FunctionApp/bin/Release/net8.0/publish",
   "azureFunctions.projectLanguage": "C#",
   "azureFunctions.projectRuntime": "~4",
   "debug.internalConsoleOptions": "neverOpen",
-  "azureFunctions.preDeployTask": "publish (functions)",
-  "azureFunctions.projectSubpath": "src\\Customer.Function"
+  "azureFunctions.preDeployTask": "publish (functions)"
 }

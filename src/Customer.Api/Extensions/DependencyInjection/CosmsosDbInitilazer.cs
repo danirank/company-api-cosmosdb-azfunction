@@ -28,6 +28,13 @@ public class CosmosDbInitializer
             {
                 Id = "Salesmen",
                 PartitionKeyPath = "/id"
-            });     
+            }); 
+
+        // await database.Database.CreateContainerIfNotExistsAsync(
+        //     new ContainerProperties
+        //     {
+        //         Id = "leases",
+        //         PartitionKeyPath = "/id"
+        //     });    
     }
 }

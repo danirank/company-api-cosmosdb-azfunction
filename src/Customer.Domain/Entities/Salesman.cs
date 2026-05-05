@@ -1,7 +1,10 @@
+using Newtonsoft.Json;
+
 namespace Customer.Domain.Entities;
 
 public class Salesman
 {
+    [JsonProperty("id")]
     public int Id { get; set; }
     public string Name { get; set; } = null!;
 

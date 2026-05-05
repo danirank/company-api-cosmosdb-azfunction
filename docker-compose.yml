@@ -10,7 +10,17 @@ services:
       AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: "true"
     volumes:
       - cosmosdb-data:/data
-    restart: unless-stopped
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite-data:/data
 
 volumes:
   cosmosdb-data:
+  azurite-data:
