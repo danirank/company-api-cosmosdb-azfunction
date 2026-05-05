@@ -20,5 +20,7 @@ public class CustomerEntity
 
     public Salesman? Salesman { get; set; }
 
+    public bool EmailSetToSalesman { get; set; } = false;
+
 
 }

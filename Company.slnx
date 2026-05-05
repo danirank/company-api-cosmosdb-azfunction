@@ -1,7 +1,10 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Company.Api/CompanyApi.csproj" />
+    <Project Path="src/Company.Api/Company.Api.csproj" />
     <Project Path="src/Company.Core/Company.Core.csproj" />
     <Project Path="src/Company.Domain/Company.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Function/">
+    <Project Path="Function/Function.csproj" />
   </Folder>
 </Solution>

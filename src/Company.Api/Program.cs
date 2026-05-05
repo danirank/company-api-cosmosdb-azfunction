@@ -1,10 +1,13 @@
 using Azure.Identity;
 using Company.Api.Endpoints;
 using Company.Api.Extensions.DependencyInjection;
+using Company.Core.Configurations;
 using Company.Core.Interfaces;
+using Company.Core.Services;
 using Company.Domain.Interfaces;
 using Company.Domain.Repositories;
 using Customer.Core.Services;
+using Resend;
 
 namespace Company.Api;
 
@@ -20,7 +23,18 @@ public class Program
         builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddSingleton<CosmosDbInitializer>();
+        builder.Services.AddTransient<IResend, ResendClient>();
+        builder.Services.AddHttpClient<ResendClient>();
+        builder.Services.AddOptions<ResendOptions>()
+            .Bind(builder.Configuration
+            .GetSection(ResendOptions.SectionName))
+            .ValidateOnStart();
 
+        builder.Services.Configure<ResendClientOptions>(
+            builder.Configuration.GetSection("Resend")
+        );
+
+        builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
@@ -36,7 +50,7 @@ public class Program
             app.MapOpenApi();
         }
 
-
+        app.MapEmailEndpoints();
         app.MapCustomerEndpoints();
 
 

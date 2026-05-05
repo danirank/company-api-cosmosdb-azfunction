@@ -1,4 +1,5 @@
 using Company.Core.Interfaces;
+using Company.Domain.Dto;
 
 namespace Company.Api.Endpoints;
 
@@ -12,9 +13,11 @@ public static class EmailEndpoints
         
         }
 
-        public static async Task<IResult> SendEmail(IEmailService emailService, string email, string subject, string message)
+        public static async Task<IResult> SendEmail(IEmailService emailService, EmailBuilderDto emailBuilder)
         {
-            await emailService.SendEmailAsync(email, subject, message);
+           
+           
+            await emailService.SendEmailAsync(emailBuilder);
             return Results.Ok();
         }
 
