@@ -22,10 +22,10 @@ public class EmailService : IEmailService
         _customerRepo = customerRepo;
     }
 
-    public async Task SendEmailAsync(OutboxDto outbox,CancellationToken cancellationToken = default)
+    public async Task SendEmailAsync(OutboxDto outbox, CancellationToken cancellationToken = default)
     {
 
-        var customer =await _customerRepo.GetCustomerByIdAsync(outbox.CustomerId);
+        var customer = await _customerRepo.GetCustomerByIdAsync(outbox.CustomerId);
 
         if (customer is null)
         {
@@ -35,20 +35,19 @@ public class EmailService : IEmailService
         var emailBuilder = new EmailBuilderDto(
             outbox.EventType,
             customer.Email,
-            customer.Name, 
-            customer.Email, 
+            customer.Name,
+            customer.Email,
             customer.Phone
             );
 
-       var message = new EmailMessage
+        var message = new EmailMessage
         {
-            To = emailBuilder.ToEmail,
+            To = customer.SalesmanEmail ?? string.Empty,
             From = _resendOptions.FromEmail,
             Subject = emailBuilder.Subject,
             TextBody = emailBuilder.EmailText()
         };
 
-        message.To.Add(emailBuilder.ToEmail);
 
         await _resend.EmailSendAsync(message);
     }
