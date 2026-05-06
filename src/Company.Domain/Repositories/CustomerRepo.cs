@@ -38,4 +38,17 @@ public class CustomerRepo : ICustomerRepo
 
         return customers;
     }
+
+    public async Task<CustomerEntity> GetCustomerByIdAsync(string customerId)
+    {
+        try
+        {
+            var response = await _container.ReadItemAsync<CustomerEntity>(customerId, new PartitionKey(customerId));
+            return response.Resource;
+        }
+        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null!;
+        }
+    }
 }

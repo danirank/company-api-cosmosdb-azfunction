@@ -5,56 +5,49 @@ using Microsoft.Extensions.Logging;
 using Company.Core.Interfaces;
 using Company.Domain.Dto;
 using Company.Domain.Entities;
+using Company.Domain.Interfaces;
 namespace Function;
 
 public class CustomerChange
 {
     private readonly ILogger<CustomerChange> _logger;
     private readonly IEmailService _emailService;
+    private readonly IOutboxRepo _outboxRepo;
 
-    public CustomerChange(ILogger<CustomerChange> logger, IEmailService emailService)
+    public CustomerChange(ILogger<CustomerChange> logger, IEmailService emailService, IOutboxRepo outboxRepo)
     {
         _logger = logger;
         _emailService = emailService;
+        _outboxRepo = outboxRepo;
     }
 
     [Function("CustomerChange")]
     public async Task Run([CosmosDBTrigger(
         databaseName: "CompanyDb",
-        containerName: "Customers",
+        containerName: "Outbox",
         Connection = "CosmosDBConnection",
         LeaseContainerName = "leases",
-        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<CustomerEntity> input)
+        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<OutboxDto> input)
     {
         if (input != null && input.Count > 0)
         {
             _logger.LogInformation("Documents modified: " + input.Count);
 
-            foreach (var customer in input)
+            foreach (var item in input)
             {
-                if (customer.EmailSetToSalesman || string.IsNullOrEmpty(customer.SalesmanEmail))
-                    continue;
-
-                _logger.LogInformation($"Customer ID: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}");
-                var emailBuilder = new EmailBuilderDto
+                try
                 {
-                    ToEmail = customer.SalesmanEmail ?? string.Empty,
-                    CustomerName = customer.Name,
-                    CustomerEmail = customer.Email,
-                    CustomerPhone = customer.Phone
-                };
+                    await _emailService.SendEmailAsync(item);
 
-                _emailService.SendEmailAsync(emailBuilder).GetAwaiter().GetResult();
-
-                customer.EmailSetToSalesman = true;
-
-                _logger.LogInformation($"Customer ID: {customer.Id}, Name: {customer.Name}, Email: {customer.Email}");
-
-                
+                    await _outboxRepo.DeleteOutboxAsync(item.Id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex,
+                        "Failed to process outbox item {Id}",
+                        item.Id);
+                }
             }
-
-
-
         }
     }
 }

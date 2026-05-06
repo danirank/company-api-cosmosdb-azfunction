@@ -4,5 +4,5 @@ namespace Company.Core.Interfaces;
 
 public interface IEmailService
 {
-    Task SendEmailAsync(EmailBuilderDto emailBuilder);
+    Task SendEmailAsync(OutboxDto outbox, CancellationToken cancellationToken = default);
 }

@@ -22,9 +22,12 @@ public class Program
         builder.Services.AddCosmosClient(builder.Configuration);
         builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
+        builder.Services.AddScoped<ISalesmanRepo, SalesmanRepo>();
         builder.Services.AddSingleton<CosmosDbInitializer>();
         builder.Services.AddTransient<IResend, ResendClient>();
         builder.Services.AddHttpClient<ResendClient>();
+        builder.Services.AddScoped<IOutboxRepo, OutboxRepo>();
+
         builder.Services.AddOptions<ResendOptions>()
             .Bind(builder.Configuration
             .GetSection(ResendOptions.SectionName))
@@ -50,7 +53,7 @@ public class Program
             app.MapOpenApi();
         }
 
-        app.MapEmailEndpoints();
+       // app.MapEmailEndpoints();
         app.MapCustomerEndpoints();
 
 
