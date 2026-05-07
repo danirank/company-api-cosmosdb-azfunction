@@ -53,4 +53,45 @@ public class CustomerRepo : ICustomerRepo
             return null!;
         }
     }
+
+    public Task<CustomerEntity> UpdateCustomerAsync(CustomerEntity customer, string customerId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<CustomerEntity>> GetCustomerByNameSearchAsync(string searchName)
+    {
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type AND CONTAINS(c.name, @searchName)")
+            .WithParameter("@type", EntityType.Customer.ToString())
+            .WithParameter("@searchName", searchName);
+
+        using var iterator =  _container.GetItemQueryIterator<CustomerEntity>(query);
+
+        var customers = new List<CustomerEntity>();
+        while (iterator.HasMoreResults)
+        {
+            var response = iterator.ReadNextAsync().Result;
+            customers.AddRange(response);
+        }
+
+        return customers;
+    }
+
+    public async Task<List<CustomerEntity>> GetCustomersBySalesmanEmailAsync(string salesmanEmail)
+    {
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type AND c.salesmanEmail = @salesmanEmail")
+            .WithParameter("@type", EntityType.Customer.ToString())
+            .WithParameter("@salesmanEmail", salesmanEmail);
+
+        using var iterator = _container.GetItemQueryIterator<CustomerEntity>(query);
+
+        var customers = new List<CustomerEntity>();
+        while (iterator.HasMoreResults)
+        {
+            var response = iterator.ReadNextAsync().Result;
+            customers.AddRange(response);
+        }
+
+        return customers;
+    }
 }
