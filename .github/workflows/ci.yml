@@ -1,9 +1,9 @@
 name: "CI"
 
 on:
-  push: 
+  push:
     branches:
-      - main 
+      - main
 
 jobs:
   backend-build-and-test:
@@ -21,4 +21,4 @@ jobs:
         run: dotnet restore Company.slnx
 
       - name: Build
-        run: dotnet build Backend/PhysioPortal.slnx --configuration Release --no-restore
+        run: dotnet build Company.slnx --configuration Release --no-restore
