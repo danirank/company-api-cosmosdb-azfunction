@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using Company.Domain.Enums;
 using Newtonsoft.Json;
 
 namespace Company.Domain.Entities;
@@ -6,6 +8,9 @@ public class Salesman
 {
     [JsonProperty("id")]
     public string Id { get; set; }
+
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
+    public EntityType Type { get; set; } = EntityType.Salesman;
     public string Name { get; set; } = null!;
 
     public string Email { get; set; } = null!;

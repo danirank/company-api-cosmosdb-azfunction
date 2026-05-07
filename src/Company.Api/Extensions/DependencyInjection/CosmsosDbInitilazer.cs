@@ -19,8 +19,8 @@ public class CosmosDbInitializer
         await database.Database.CreateContainerIfNotExistsAsync(
             new ContainerProperties
             {
-                Id = "Customers",
-                PartitionKeyPath = "/id"
+                Id = "CompanyData",
+                PartitionKeyPath = "/type"
             });
 
         // await database.Database.CreateContainerIfNotExistsAsync(

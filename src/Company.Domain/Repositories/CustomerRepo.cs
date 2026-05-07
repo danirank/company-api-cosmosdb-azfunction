@@ -2,6 +2,7 @@ using Microsoft.Azure.Cosmos;
 using Company.Domain.Entities;
 using Company.Domain.Interfaces;
 using Microsoft.Azure.Cosmos.Linq;
+using Company.Domain.Enums;
 
 namespace Company.Domain.Repositories;
 
@@ -14,7 +15,7 @@ public class CustomerRepo : ICustomerRepo
     {
         _container = cosmosClient
                 .GetDatabase("CompanyDb")
-                .GetContainer("Customers");
+                .GetContainer("CompanyData");
     }
     public async Task<CustomerEntity> AddCustomerAsync(CustomerEntity customer)
     {
@@ -24,7 +25,8 @@ public class CustomerRepo : ICustomerRepo
 
     public async Task<List<CustomerEntity>> GetCustomersAsync()
     {
-        var query = new QueryDefinition("SELECT * FROM c");
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type")
+            .WithParameter("@type", EntityType.Customer.ToString());
 
         using var iterator = _container.GetItemQueryIterator<CustomerEntity>(query);
 

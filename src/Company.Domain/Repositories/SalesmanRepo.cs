@@ -1,6 +1,7 @@
 namespace Company.Domain.Repositories;
 
 using Company.Domain.Entities;
+using Company.Domain.Enums;
 using Company.Domain.Interfaces;
 using Microsoft.Azure.Cosmos;
 
@@ -12,7 +13,7 @@ public class SalesmanRepo : ISalesmanRepo
     {
         _container = cosmosClient
                 .GetDatabase("CompanyDb")
-                .GetContainer("Salesmen");
+                .GetContainer("CompanyData");
     }
     public async Task<Salesman> AddSalesmanAsync(Salesman salesman)
     {
@@ -34,7 +35,10 @@ public class SalesmanRepo : ISalesmanRepo
     }
     public async Task<List<Salesman>> GetSalesmenAsync()
     {
-        var query = new QueryDefinition("SELECT * FROM c");
+        var query = new QueryDefinition(
+            "SELECT * FROM c" +
+            "WHERE c.type = @type")
+            .WithParameter("@type", EntityType.Salesman.ToString());
 
         using var iterator = _container.GetItemQueryIterator<Salesman>(query);
 

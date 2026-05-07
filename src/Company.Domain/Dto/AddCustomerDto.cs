@@ -1,9 +1,14 @@
+using System.Text.Json.Serialization;
+using Company.Domain.Enums;
+
 namespace Company.Domain.Dto;
 
 public class AddCustomerDto
 {
     public string Name { get; set; } = null!;
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public EntityType Type { get; set; } = EntityType.Customer;
     public string Title { get; set; } = null!;
 
 
