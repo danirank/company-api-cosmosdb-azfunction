@@ -9,12 +9,10 @@ namespace Customer.Core.Services;
 public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepo _repo;
-    private readonly IOutboxRepo _outboxRepo;
 
-    public CustomerService(ICustomerRepo repo, IOutboxRepo outboxRepo)
+    public CustomerService(ICustomerRepo repo)
     {
         _repo = repo;
-        _outboxRepo = outboxRepo;
     }
 
 
