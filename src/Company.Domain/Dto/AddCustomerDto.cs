@@ -9,6 +9,9 @@ public class AddCustomerDto
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public EntityType Type { get; set; } = EntityType.Customer;
+
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
+    public StatusType Status {get; set;} = StatusType.Created;
     public string Title { get; set; } = null!;
 
 

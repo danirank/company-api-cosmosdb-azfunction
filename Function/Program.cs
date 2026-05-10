@@ -15,7 +15,6 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services.AddResendEmailService(builder.Configuration);
 builder.Services.AddCosmosClient(builder.Configuration);
-builder.Services.AddScoped<IOutboxRepo, OutboxRepo>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();

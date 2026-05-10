@@ -43,24 +43,7 @@ public class CustomerService : ICustomerService
             return new GetCustomerDto { ErrorMessage = "Failed to add customer." };
 
 
-        try
-        {
-            await _outboxRepo.AddOutboxAsync(new OutboxDto
-            {
-                Id = Guid.NewGuid().ToString(),
-                EventType = OutboxType.Created,
-                CustomerId = result.Id,
-                CreatedAt = DateTime.UtcNow,
-
-            });
-        }
-        catch
-        {
-            return new GetCustomerDto
-            {
-                ErrorMessage = "Customer was created, but notification could not be queued."
-            };
-        }
+    
 
         return new GetCustomerDto
         {

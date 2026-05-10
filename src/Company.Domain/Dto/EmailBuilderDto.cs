@@ -7,7 +7,7 @@ public class EmailBuilderDto
 {
     
 
-    public OutboxType Type { get; set; }
+    public StatusType Type { get; set; }
     public string ToEmail { get; set; } = null!;
     public string Subject { get; set; } = "New Customer Assigned";
     public string CustomerName { get; set; } = null!;
@@ -22,7 +22,7 @@ public class EmailBuilderDto
     public string DeletedBody => $"Customer {CustomerName} has been removed!";
 
 
-    public EmailBuilderDto(OutboxType type, string toEmail, string customerName, string customerEmail, string customerPhone)
+    public EmailBuilderDto(StatusType type, string toEmail, string customerName, string customerEmail, string customerPhone)
     {
         Type = type;
         ToEmail = toEmail;
@@ -34,13 +34,13 @@ public class EmailBuilderDto
 
     public string EmailText()
     {
-        if (Type == OutboxType.Created)
+        if (Type == StatusType.Created)
             return $"To: {ToEmail}\n\n{CreatedBody}";
 
-        if (Type == OutboxType.Updated)
+        if (Type == StatusType.Updated)
             return $"To: {ToEmail}\n\n{UpdatedBody}";
 
-        if (Type == OutboxType.Deleted)
+        if (Type == StatusType.Deleted)
             return $"To: {ToEmail}\n\n{DeletedBody}";
 
         return string.Empty;

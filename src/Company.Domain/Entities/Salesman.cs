@@ -11,6 +11,9 @@ public class Salesman
 
     [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
     public EntityType Type { get; set; } = EntityType.Salesman;
+
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
+    public StatusType Status {get; set;}
     public string Name { get; set; } = null!;
 
     public string Email { get; set; } = null!;

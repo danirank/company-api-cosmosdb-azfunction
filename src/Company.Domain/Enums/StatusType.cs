@@ -1,5 +1,5 @@
 namespace Company.Domain.Enums;
-    public enum OutboxType
+    public enum StatusType
     {
         Created = 0,
         Updated = 1,

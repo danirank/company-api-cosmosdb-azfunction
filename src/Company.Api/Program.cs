@@ -24,7 +24,6 @@ public class Program
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<ISalesmanRepo, SalesmanRepo>();
         builder.Services.AddSingleton<CosmosDbInitializer>();
-        builder.Services.AddScoped<IOutboxRepo, OutboxRepo>();
 
         builder.Services.AddTransient<IResend, ResendClient>();
         builder.Services.AddHttpClient<ResendClient>();

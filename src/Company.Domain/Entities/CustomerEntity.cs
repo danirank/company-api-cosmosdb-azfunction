@@ -1,3 +1,4 @@
+using System.Security;
 using System.Text.Json.Serialization;
 using Company.Domain.Enums;
 using Newtonsoft.Json;
@@ -11,6 +12,9 @@ public class CustomerEntity
 
     [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
     public EntityType Type { get; set; } = EntityType.Customer;
+
+    [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
+    public StatusType Status {get; set;}
     public string Name { get; set; } = null!;
 
     public string Title { get; set; } = null!;

@@ -1,9 +1,12 @@
 namespace Company.Core.Services;
 
 using System.ComponentModel.DataAnnotations;
+using Azure.Core;
 using Company.Core.Configurations;
 using Company.Core.Interfaces;
 using Company.Domain.Dto;
+using Company.Domain.Entities;
+using Company.Domain.Enums;
 using Company.Domain.Interfaces;
 using Microsoft.Extensions.Options;
 using Resend;
@@ -22,18 +25,12 @@ public class EmailService : IEmailService
         _customerRepo = customerRepo;
     }
 
-    public async Task SendEmailAsync(OutboxDto outbox, CancellationToken cancellationToken = default)
+    public async Task SendEmailAsync(StatusType status, CustomerEntity customer, CancellationToken cancellationToken = default)
     {
 
-        var customer = await _customerRepo.GetCustomerByIdAsync(outbox.CustomerId);
-
-        if (customer is null)
-        {
-            throw new ValidationException($"Customer with ID {outbox.CustomerId} not found.");
-        }
 
         var emailBuilder = new EmailBuilderDto(
-            outbox.EventType,
+            status,
             customer.Email,
             customer.Name,
             customer.Email,

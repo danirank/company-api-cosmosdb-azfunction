@@ -27,7 +27,7 @@ public class CustomerChange
         containerName: "Outbox",
         Connection = "CosmosDBConnection",
         LeaseContainerName = "leases",
-        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<OutboxDto> input)
+        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<CustomerEntity> input)
     {
         if (input != null && input.Count > 0)
         {
@@ -37,7 +37,7 @@ public class CustomerChange
             {
                 try
                 {
-                    await _emailService.SendEmailAsync(item);
+                    await _emailService.SendEmailAsync(item.Status, item);
 
                     await _outboxRepo.DeleteOutboxAsync(item.Id);
                 }
