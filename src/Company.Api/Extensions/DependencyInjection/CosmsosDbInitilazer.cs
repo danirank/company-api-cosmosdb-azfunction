@@ -30,12 +30,12 @@ public class CosmosDbInitializer
         //         PartitionKeyPath = "/id"
         //     }); 
 
-         await database.Database.CreateContainerIfNotExistsAsync(
-            new ContainerProperties
-            {
-                Id = "Outbox",
-                PartitionKeyPath = "/id"
-            });
+        //  await database.Database.CreateContainerIfNotExistsAsync(
+        //     new ContainerProperties
+        //     {
+        //         Id = "Outbox",
+        //         PartitionKeyPath = "/id"
+        //     });
 
         // await database.Database.CreateContainerIfNotExistsAsync(
         //     new ContainerProperties

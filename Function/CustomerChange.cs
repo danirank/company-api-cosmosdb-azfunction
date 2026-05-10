@@ -6,6 +6,7 @@ using Company.Core.Interfaces;
 using Company.Domain.Dto;
 using Company.Domain.Entities;
 using Company.Domain.Interfaces;
+using Company.Domain.Enums;
 namespace Function;
 
 public class CustomerChange
@@ -24,10 +25,10 @@ public class CustomerChange
     [Function("CustomerChange")]
     public async Task Run([CosmosDBTrigger(
         databaseName: "CompanyDb",
-        containerName: "Outbox",
+        containerName: "CompanyData",
         Connection = "CosmosDBConnection",
         LeaseContainerName = "leases",
-        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<CustomerEntity> input)
+        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<dynamic> input)
     {
         if (input != null && input.Count > 0)
         {
@@ -35,6 +36,8 @@ public class CustomerChange
 
             foreach (var item in input)
             {
+                if (item.Type == EntityType.Salesman)
+                    continue;
                 try
                 {
                     await _emailService.SendEmailAsync(item.Status, item);
@@ -43,9 +46,8 @@ public class CustomerChange
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
-                        "Failed to process outbox item {Id}",
-                        item.Id);
+                    _logger.LogError(ex.Message,
+                        "Failed to process outbox item {Id}");
                 }
             }
         }
