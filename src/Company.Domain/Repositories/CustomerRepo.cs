@@ -19,7 +19,7 @@ public class CustomerRepo : ICustomerRepo
     }
     public async Task<CustomerEntity> AddCustomerAsync(CustomerEntity customer)
     {
-        await _container.CreateItemAsync(customer, new PartitionKey(customer.Id));
+        await _container.CreateItemAsync(customer, new PartitionKey(customer.Type.ToString()));
         return customer;
     }
 
@@ -43,21 +43,11 @@ public class CustomerRepo : ICustomerRepo
 
     public async Task<CustomerEntity> GetCustomerByIdAsync(string customerId)
     {
-        try
-        {
-            var response = await _container.ReadItemAsync<CustomerEntity>(customerId, new PartitionKey(customerId));
-            return response.Resource;
-        }
-        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            return null!;
-        }
+        var response = await _container.ReadItemAsync<CustomerEntity>(customerId, new PartitionKey(EntityType.Customer.ToString()));
+        return response.Resource;
     }
 
-    public Task<CustomerEntity> UpdateCustomerAsync(CustomerEntity customer, string customerId)
-    {
-        throw new NotImplementedException();
-    }
+   
 
     public async Task<List<CustomerEntity>> GetCustomerByNameSearchAsync(string searchName)
     {
@@ -79,19 +69,34 @@ public class CustomerRepo : ICustomerRepo
 
     public async Task<List<CustomerEntity>> GetCustomersBySalesmanEmailAsync(string salesmanEmail)
     {
-        var query = new QueryDefinition("SELECT * FROM c WHERE c.type = @type AND c.salesmanEmail = @salesmanEmail")
+        var query = new QueryDefinition(
+            "SELECT * FROM c WHERE c.type = @type AND c.salesmanEmail = @salesmanEmail")
             .WithParameter("@type", EntityType.Customer.ToString())
             .WithParameter("@salesmanEmail", salesmanEmail);
 
-        using var iterator = _container.GetItemQueryIterator<CustomerEntity>(query);
+        var options = new QueryRequestOptions
+        {
+            PartitionKey = new PartitionKey(EntityType.Customer.ToString())
+        };
+
+        using var iterator = _container.GetItemQueryIterator<CustomerEntity>(
+            query,
+            requestOptions: options);
 
         var customers = new List<CustomerEntity>();
+
         while (iterator.HasMoreResults)
         {
-            var response = iterator.ReadNextAsync().Result;
+            var response = await iterator.ReadNextAsync();
             customers.AddRange(response);
         }
 
         return customers;
+    }
+
+    public async Task<CustomerEntity> UpdateCustomerAsync(CustomerEntity customer)
+    {
+        await _container.ReplaceItemAsync(customer, customer.Id, new PartitionKey(customer.Type.ToString()));
+        return customer;
     }
 }

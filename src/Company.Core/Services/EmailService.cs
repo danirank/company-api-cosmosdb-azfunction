@@ -25,26 +25,27 @@ public class EmailService : IEmailService
         _customerRepo = customerRepo;
     }
 
-    public async Task SendEmailAsync(StatusType status, CustomerEntity customer, CancellationToken cancellationToken = default)
+    public async Task SendEmailAsync(
+    StatusType status,
+    CustomerEntity customer,
+    CancellationToken cancellationToken = default)
     {
-
-
-        var emailBuilder = new EmailBuilderDto(
-            status,
-            customer.Email,
-            customer.Name,
-            customer.Email,
-            customer.Phone
-            );
+        var emailBuilder = new EmailBuilderDto(status)
+        {
+            CustomerName = customer.Name,
+            CustomerAdress = customer.Address,
+            CustomerTitle = customer.Title,
+            CustomerEmail = customer.Email,
+            CustomerPhone = customer.Phone
+        };
 
         var message = new EmailMessage
         {
             To = customer.SalesmanEmail ?? string.Empty,
             From = _resendOptions.FromEmail,
             Subject = emailBuilder.Subject,
-            TextBody = emailBuilder.EmailText()
+            TextBody = emailBuilder.Body
         };
-
 
         await _resend.EmailSendAsync(message);
     }

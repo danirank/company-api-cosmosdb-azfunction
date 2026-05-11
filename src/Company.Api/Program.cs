@@ -23,8 +23,8 @@ public class Program
         builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<ISalesmanRepo, SalesmanRepo>();
+        builder.Services.AddScoped<ISalesmenService, SalesmenService>();
         builder.Services.AddSingleton<CosmosDbInitializer>();
-
         builder.Services.AddTransient<IResend, ResendClient>();
         builder.Services.AddHttpClient<ResendClient>();
         builder.Services.AddOptions<ResendOptions>()
@@ -52,8 +52,9 @@ public class Program
             app.MapOpenApi();
         }
 
-       // app.MapEmailEndpoints();
+        // app.MapEmailEndpoints();
         app.MapCustomerEndpoints();
+        app.MapSalesmanEndpoints();
 
 
 

@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 using Company.Core.Interfaces;
 using Company.Domain.Interfaces;
 using Company.Domain.Enums;
+using System.Text.Json;
+using Company.Domain.Entities;
+using System.Text.Json.Serialization;
 
 namespace Function;
 
@@ -23,7 +26,7 @@ public class CustomerChange
         containerName: "CompanyData",
         Connection = "CosmosDBConnection",
         LeaseContainerName = "leases",
-        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<dynamic> input)
+        CreateLeaseContainerIfNotExists = true)] IReadOnlyList<JsonElement> input)
     {
         if (input != null && input.Count > 0)
         {
@@ -31,20 +34,41 @@ public class CustomerChange
 
             foreach (var item in input)
             {
-                if (item.Type == EntityType.Salesman)
-                    continue;
+                var type = item.GetProperty("type").GetString();
 
-                try
+                switch (type)
                 {
-                     
-                    await _emailService.SendEmailAsync(item.Status, item);
+                    case "Customer":
+                    {
+                        var customer = item.Deserialize<CustomerEntity>(
+                            new JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive = true,
+                                Converters =
+                                {
+                                    new JsonStringEnumConverter()
+                                }
+                            });
 
-                   
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Message,
-                        "Failed to process outbox item {Id}");
+                        if (customer is null)
+                            continue;
+                        _logger.LogInformation("Customer: " + customer.Name + " - " + customer.Status.ToString());
+                        await _emailService.SendEmailAsync(
+                            customer.Status,
+                            customer);
+
+                        break;
+                    }
+
+                    case "Salesman":
+                    {
+                        var salesman = item.Deserialize<Salesman>();
+
+                        if (salesman is null)
+                            continue;
+
+                        break;
+                    }
                 }
             }
         }

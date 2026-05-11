@@ -1,3 +1,4 @@
+using System.Reflection;
 using Company.Domain.Entities;
 using Company.Domain.Enums;
 
@@ -5,44 +6,57 @@ namespace Company.Domain.Dto;
 
 public class EmailBuilderDto
 {
-    
-
     public StatusType Type { get; set; }
-    public string ToEmail { get; set; } = null!;
-    public string Subject { get; set; } = "New Customer Assigned";
+
+    public string Subject => GetSubject();
+
     public string CustomerName { get; set; } = null!;
 
+    public string CustomerTitle { get; set; } = null!;
+    public string CustomerAdress { get; set; } = null!;
     public string CustomerEmail { get; set; } = null!;
     public string CustomerPhone { get; set; } = null!;
 
-    public string CreatedBody => $"You have been assigned a new customer!\n\nCustomer Name: {CustomerName}\nCustomer Email: {CustomerEmail}\nCustomer Phone: {CustomerPhone}";
+    public string Body => EmailText();
 
-    public string UpdatedBody => $"Your customer information has been updated!\n\nCustomer Name: {CustomerName}\nCustomer Email: {CustomerEmail}\nCustomer Phone: {CustomerPhone}";
-
-    public string DeletedBody => $"Customer {CustomerName} has been removed!";
-
-
-    public EmailBuilderDto(StatusType type, string toEmail, string customerName, string customerEmail, string customerPhone)
+    public EmailBuilderDto(StatusType type)
     {
         Type = type;
-        ToEmail = toEmail;
-        CustomerName = customerName;
-        CustomerEmail = customerEmail;
-        CustomerPhone = customerPhone;
     }
-    
 
-    public string EmailText()
+    private string GetSubject()
     {
-        if (Type == StatusType.Created)
-            return $"To: {ToEmail}\n\n{CreatedBody}";
+        return Type switch
+        {
+            StatusType.Created => "New Customer Created",
+            StatusType.Updated => "Customer Updated",
+            StatusType.Deleted => "Customer Deleted",
+            _ => "Unknown"
+        };
+    }
 
-        if (Type == StatusType.Updated)
-            return $"To: {ToEmail}\n\n{UpdatedBody}";
+    private string EmailText()
+    {
 
-        if (Type == StatusType.Deleted)
-            return $"To: {ToEmail}\n\n{DeletedBody}";
+        var baseBody = $"Customer Title: {CustomerTitle}\n" +
+                $"Customer Address: {CustomerAdress}\n" +
+                $"Customer Name: {CustomerName}\n" +
+                $"Customer Email: {CustomerEmail}\n" +
+                $"Customer Phone: {CustomerPhone}";
+                
+        return Type switch
+        {
+            StatusType.Created =>
+                $"New customer has been created!\n\n" + baseBody,
+                
 
-        return string.Empty;
+            StatusType.Updated =>
+                $"Customer has been updated!\n\n" + baseBody,
+
+            StatusType.Deleted =>
+                $"Customer {CustomerName} has been removed!",
+
+            _ => "Unknown"
+        };
     }
 }

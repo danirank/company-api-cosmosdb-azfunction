@@ -17,8 +17,30 @@ public class SalesmanRepo : ISalesmanRepo
     }
     public async Task<Salesman> AddSalesmanAsync(Salesman salesman)
     {
-        await _container.CreateItemAsync(salesman, new PartitionKey(salesman.Id));
+        await _container.CreateItemAsync(salesman, new PartitionKey(salesman.Type.ToString()));
         return salesman;
+    }
+
+    public async Task<Salesman?> GetSalesmanByEmailAsync(string email)
+    {
+        var query = new QueryDefinition(
+            "SELECT * FROM c" +
+            "WHERE c.email = @email")
+            .WithParameter("@email", email)
+            .WithParameter("@type", EntityType.Salesman.ToString());
+
+        using var iterator = _container.GetItemQueryIterator<Salesman>(query);
+
+        var salesman = await iterator.ReadNextAsync();
+
+        if (salesman.Count() == 0)
+        {
+            return null!;
+        }
+        return  salesman.FirstOrDefault();
+
+        
+
     }
 
     public async Task<Salesman> GetSalesmanByIdAsync(string id)
